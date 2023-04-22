@@ -1,24 +1,36 @@
 package com.invoice.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.security.SecureRandom;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Invoice {
 
-    private final long customerId;
-    private final String customerName;
-    private final double amount;
+    private long customerId;
+    private String customerName;
+    private double amount;
 
+    @JsonIgnore
+    ObjectMapper mapper = new ObjectMapper();
+
+    public Invoice(int id, String customerName, double amount) {
+        this.customerId = id;
+        this.customerName = customerName;
+        this.amount = amount;
+    }
+
+
+    @SneakyThrows
     @Override
     public String toString() {
-        return "Invoice{" +
-                "customerId='" + customerId + '\'' +
-                ", amount=" + amount + '\'' +
-                ", customerName=" + customerName +
-                '}';
+        return mapper.writeValueAsString(this);
     }
 
     public static Invoice generateRandomInvoice() {
