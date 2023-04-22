@@ -1,4 +1,4 @@
-package consumer;
+package com.invoice.consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -13,7 +13,7 @@ import java.util.Properties;
 public class InvoiceConsumer {
 
     public static void main(String[] args) {
-        // Set up Kafka consumer
+        // Set up Kafka com.invoice.common.consumer
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "invoice-consumer-group");
