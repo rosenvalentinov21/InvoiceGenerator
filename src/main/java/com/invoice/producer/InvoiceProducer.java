@@ -139,6 +139,7 @@ public class InvoiceProducer {
     private static class InvoiceCallback implements Callback {
         @Override
         public void onCompletion(RecordMetadata metadata, Exception exception) {
+            //Check if errors exist and print proper message
             if (exception == null) {
                 System.out
                         .printf("Invoice sent successfully to topic %s partition %d at offset %d%n",
@@ -147,6 +148,7 @@ public class InvoiceProducer {
                 System.err.println("Failed to send invoice: " + exception.getMessage());
             }
 
+            //Wait until a set of operations being performed in other threads completes.
             LATCH.countDown();
         }
     }

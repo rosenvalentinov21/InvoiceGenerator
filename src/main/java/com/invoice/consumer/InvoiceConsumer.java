@@ -19,6 +19,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 public class InvoiceConsumer {
 
+    //store customer information in hashmap
     private static final Map<String, Double> customerDebt = new HashMap<>();
 
     public static void main(String[] args) throws JsonProcessingException {
@@ -40,32 +41,29 @@ public class InvoiceConsumer {
         consumer.subscribe(Collections.singletonList(TOPIC_NAME));
         System.out.println("Successfully subscribed to the topic");
 
-        // TODO: keep separate summary for each different customer in memory and once in a while
-        //  print short summary for each customer.
-
-        // TODO: extra effort - use avro for binarizing the records
-
         // Poll for new messages and print them to the console
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(3000));
 
-            System.out.println(records.count());
-            for (ConsumerRecord<String, String> record : records) {
-                // parse JSON->Invoice
-                ObjectMapper mapper = new ObjectMapper();
-                Invoice invoice = mapper.readValue(record.value(), Invoice.class);
+            if(records.count() > 0) {
+                System.out.println(records.count());
+                for (ConsumerRecord<String, String> record : records) {
+                    // parse JSON format -> Invoice object
+                    ObjectMapper mapper = new ObjectMapper();
+                    Invoice invoice = mapper.readValue(record.value(), Invoice.class);
 
-                if (!customerDebt.containsKey(invoice.getCustomerName())) {
-                    customerDebt.put(invoice.getCustomerName(), 0d);
+                    // add new customer if missing
+                    if (!customerDebt.containsKey(invoice.getCustomerName())) {
+                        customerDebt.put(invoice.getCustomerName(), 0d);
+                    }
+
+                    customerDebt.put(invoice.getCustomerName(),
+                            customerDebt.get(invoice.getCustomerName()) + invoice.getAmount());
                 }
 
-                customerDebt.put(invoice.getCustomerName(),
-                        customerDebt.get(invoice.getCustomerName()) + invoice.getAmount());
+                customerDebt.forEach((key, value) -> System.out
+                        .println("Customer " + key + " has a cost of " + value));
             }
-
-            customerDebt.forEach((key, value) -> System.out
-                    .println("Customer " + key + " has a cost of " + value));
         }
     }
-
 }
