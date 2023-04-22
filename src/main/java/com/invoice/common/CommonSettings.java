@@ -5,5 +5,8 @@ public interface CommonSettings {
     String MESSAGE_CMD = "msg:";
     int CUT_OFF_OFFSET = MESSAGE_CMD.length();
 
+    // Invoice producers vars
     String TOPIC_NAME = "invoices";
+    String BOOTSTRAP_SERVERS = "localhost:29092";
+
 }
