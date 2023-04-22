@@ -1,4 +1,4 @@
-package common;
+package com.invoice.common;
 
 public interface CommonSettings {
     String EXIT_CMD = "exit";
